@@ -16,6 +16,8 @@ MESSENGER_REGIONS_FILE = (
 )
 OUTPUT_FILE = Path(__file__).parent.parent / "resources/region_probability_maps.nc"
 
+INPUT_CADENCE = 5  # minutes
+
 # Settings for the probability map
 BIN_SIZE = 0.25  # radii
 X_BOUNDS = (-5, 5)
@@ -51,8 +53,6 @@ def main():
             "CYL MSM'"
         ] / Constants.MERCURY_RADIUS.to(u.km)
 
-        print(region_observations)
-
         # Create histogram of observations in each bin
         region_spatial_counts, _, _ = np.histogram2d(
             region_observations["X MSM'"],
@@ -87,6 +87,11 @@ def main():
     for region_name, map in region_probability_maps.items():
 
         region_probability_dataset[region_name] = (("X MSM'", "CYL MSM'"), map)
+
+    region_probability_dataset["Minutes Spent"] = (
+        ("X MSM'", "CYL MSM'"),
+        map_totals * INPUT_CADENCE,
+    )  # map_totals is in units of measurement cadence, which for now, we've downsampled to 5 minutes
 
     # Save as NetCDF
     region_probability_dataset.to_netcdf(OUTPUT_FILE)
