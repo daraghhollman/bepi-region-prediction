@@ -215,7 +215,7 @@ def get_messenger_positions(cache_file: Path | None = None) -> QTable:
     full_mission_time_range = TimeRange("2011-04-01", "2015-03-01")
 
     # Find a list of times between the bounds of the time range and
-    resolution = 5 * u.minute
+    resolution = 1 * u.minute
     query_times: list[Time] = [
         t.start
         for t in full_mission_time_range.window(cadence=resolution, window=resolution)

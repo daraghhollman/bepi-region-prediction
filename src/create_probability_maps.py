@@ -16,7 +16,7 @@ MESSENGER_REGIONS_FILE = (
 )
 OUTPUT_FILE = Path(__file__).parent.parent / "resources/region_probability_maps.nc"
 
-INPUT_CADENCE = 5  # minutes
+INPUT_CADENCE = 1  # minutes
 
 # Settings for the probability map
 BIN_SIZE = 0.25  # radii
@@ -88,7 +88,7 @@ def main():
 
         region_probability_dataset[region_name] = (("X MSM'", "CYL MSM'"), map)
 
-    region_probability_dataset["Minutes Spent"] = (
+    region_probability_dataset["Minutes In Bin"] = (
         ("X MSM'", "CYL MSM'"),
         map_totals * INPUT_CADENCE,
     )  # map_totals is in units of measurement cadence, which for now, we've downsampled to 5 minutes
