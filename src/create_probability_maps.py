@@ -5,6 +5,7 @@ the solar wind, magnetosheath, and magnetosphere.
 
 from pathlib import Path
 
+import astropy.units as u
 import numpy as np
 import xarray as xr
 from astropy.table import QTable
@@ -43,12 +44,14 @@ def main():
         # We only need positions at this point
         # We also convert to radii
         region_observations = region_observations[["X MSM'", "CYL MSM'"]]
-        region_observations["X MSM'"] = (
-            region_observations["X MSM'"] / Constants.MERCURY_RADIUS
-        )
-        region_observations["CYL MSM'"] = (
-            region_observations["CYL MSM'"] / Constants.MERCURY_RADIUS
-        )
+        region_observations["X MSM'"] = region_observations[
+            "X MSM'"
+        ] / Constants.MERCURY_RADIUS.to(u.km)
+        region_observations["CYL MSM'"] = region_observations[
+            "CYL MSM'"
+        ] / Constants.MERCURY_RADIUS.to(u.km)
+
+        print(region_observations)
 
         # Create histogram of observations in each bin
         region_spatial_counts, _, _ = np.histogram2d(
