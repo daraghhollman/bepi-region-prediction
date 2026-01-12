@@ -21,6 +21,8 @@ def get_probability_at_position(
     # - record a probability value for solar wind, magnetosheath, and
     # magneosphere.
 
+    positions = positions.copy()
+
     # Convert to X-CYL
     positions["CYL MSM'"] = np.sqrt(positions["Y MSM'"] ** 2 + positions["Z MSM'"] ** 2)
 
