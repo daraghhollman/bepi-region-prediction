@@ -11,12 +11,14 @@ import xarray as xr
 from astropy.table import QTable
 from hermpy.utils import Constants
 
+from determine_messenger_regions import RESOLUTION
+
 MESSENGER_REGIONS_FILE = (
     Path(__file__).parent.parent / "resources/messenger_regions.ecsv"
 )
 OUTPUT_FILE = Path(__file__).parent.parent / "resources/region_probability_maps.nc"
 
-INPUT_CADENCE = 1  # minutes
+INPUT_CADENCE = RESOLUTION.to("minute").value
 
 # Settings for the probability map
 BIN_SIZE = 0.25  # radii

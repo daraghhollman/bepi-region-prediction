@@ -18,6 +18,8 @@ from sunpy.time import TimeRange
 
 OUTPUT_FILE = Path(__file__).parent.parent / "resources/messenger_regions.ecsv"
 
+RESOLUTION: u.Quantity = 20 * u.minute
+
 
 def main():
     print("Fetching SPICE kernels")
@@ -215,10 +217,9 @@ def get_messenger_positions(cache_file: Path | None = None) -> QTable:
     full_mission_time_range = TimeRange("2011-04-01", "2015-03-01")
 
     # Find a list of times between the bounds of the time range and
-    resolution = 1 * u.minute
     query_times: list[Time] = [
         t.start
-        for t in full_mission_time_range.window(cadence=resolution, window=resolution)
+        for t in full_mission_time_range.window(cadence=RESOLUTION, window=RESOLUTION)
     ]
 
     ets = spice.datetime2et(
