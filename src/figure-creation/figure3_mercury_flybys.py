@@ -126,6 +126,9 @@ def main():
             color="blue",
         )
 
+        if ax == axes[-1]:
+            ax.set_xlabel("Minutes After Closest Approach")
+
     plt.show()
 
 
