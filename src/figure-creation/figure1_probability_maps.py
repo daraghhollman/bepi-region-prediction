@@ -102,7 +102,7 @@ def main():
             cbar_ax = ax.inset_axes(cbar_bounds)
 
             plt.colorbar(
-                mesh, cax=cbar_ax, location="bottom", label="Relative Region Occurance"
+                mesh, cax=cbar_ax, location="bottom", label="Relative Region Occurence"
             )
 
     # Config to apply to all axes
