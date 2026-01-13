@@ -13,7 +13,7 @@ def load_probability_maps(file: Path) -> xr.Dataset:
 
 def get_probability_at_position(
     positions: QTable, probability_map: xr.Dataset
-) -> tuple[list[float], list[float], list[float]]:
+) -> tuple[list[list[float]], list[list[float]], list[list[float]]]:
 
     # For each position, we need to:
     # - convert to cylindrical coordinates
@@ -43,23 +43,56 @@ def get_probability_at_position(
     cyl_indices = np.digitize(positions["CYL MSM'"], cyl_bins) - 1
 
     # Iterrate through position indices and assign probabilities
-    solar_wind_values: list[float] = []
-    magnetosheath_values: list[float] = []
-    magnetosphere_values: list[float] = []
+    solar_wind_prob, magnetosheath_prob, magnetosphere_prob = [], [], []
+    solar_wind_lower, magnetosheath_lower, magnetosphere_lower = [], [], []
+    solar_wind_upper, magnetosheath_upper, magnetosphere_upper = [], [], []
 
     for ix, ic in zip(x_indices, cyl_indices):
-
-        # Ensure the index is within the valid histogram range
         if 0 <= ix < len(x_bins) - 1 and 0 <= ic < len(cyl_bins) - 1:
 
-            solar_wind_values.append(probability_map["Solar Wind"][ix, ic].item())
-            magnetosheath_values.append(probability_map["Magnetosheath"][ix, ic].item())
-            magnetosphere_values.append(probability_map["Magnetosphere"][ix, ic].item())
+            # Solar wind
+            solar_wind_lower.append(
+                probability_map["Solar Wind 95% Lower"][ix, ic].item()
+            )
+            solar_wind_prob.append(probability_map["Solar Wind"][ix, ic].item())
+            solar_wind_upper.append(
+                probability_map["Solar Wind 95% Upper"][ix, ic].item()
+            )
 
+            # Magnetosheath
+            magnetosheath_lower.append(
+                probability_map["Magnetosheath 95% Lower"][ix, ic].item()
+            )
+            magnetosheath_prob.append(probability_map["Magnetosheath"][ix, ic].item())
+            magnetosheath_upper.append(
+                probability_map["Magnetosheath 95% Upper"][ix, ic].item()
+            )
+
+            # Magnetosphere
+            magnetosphere_lower.append(
+                probability_map["Magnetosphere 95% Lower"][ix, ic].item()
+            )
+            magnetosphere_prob.append(probability_map["Magnetosphere"][ix, ic].item())
+            magnetosphere_upper.append(
+                probability_map["Magnetosphere 95% Upper"][ix, ic].item()
+            )
         else:
 
-            solar_wind_values.append(np.nan)
-            magnetosheath_values.append(np.nan)
-            magnetosphere_values.append(np.nan)
+            # Out-of-range positions
+            solar_wind_lower.append(np.nan)
+            solar_wind_prob.append(np.nan)
+            solar_wind_upper.append(np.nan)
 
-    return (solar_wind_values, magnetosheath_values, magnetosphere_values)
+            magnetosheath_lower.append(np.nan)
+            magnetosheath_prob.append(np.nan)
+            magnetosheath_upper.append(np.nan)
+
+            magnetosphere_lower.append(np.nan)
+            magnetosphere_prob.append(np.nan)
+            magnetosphere_upper.append(np.nan)
+
+    probabilities = [solar_wind_prob, magnetosheath_prob, magnetosphere_prob]
+    lower = [solar_wind_lower, magnetosheath_lower, magnetosphere_lower]
+    upper = [solar_wind_upper, magnetosheath_upper, magnetosphere_upper]
+
+    return probabilities, lower, upper

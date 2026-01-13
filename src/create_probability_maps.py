@@ -10,6 +10,7 @@ import numpy as np
 import xarray as xr
 from astropy.table import QTable
 from hermpy.utils import Constants
+from numpy.typing import NDArray
 
 from determine_messenger_regions import RESOLUTION
 
@@ -87,7 +88,13 @@ def main():
     region_probability_dataset["Minutes In Bin"] = (
         ("X MSM'", "CYL MSM'"),
         map_totals * INPUT_CADENCE,
-    )  # map_totals is in units of measurement cadence, which for now, we've downsampled to 5 minutes
+    )  # map_totals is in units of measurement cadence
+
+    region_probability_dataset["N Observations"] = (("X MSM'", "CYL MSM'"), map_totals)
+
+    region_probability_dataset = determine_proportional_confidence_interval(
+        region_probability_dataset
+    )
 
     # Save as NetCDF
     region_probability_dataset.to_netcdf(OUTPUT_FILE)
@@ -95,6 +102,51 @@ def main():
     # Check that it was saved correctly
     loaded = xr.load_dataset(OUTPUT_FILE)
     print(loaded)
+
+
+def determine_proportional_confidence_interval(
+    probabilitiy_map: xr.Dataset,
+) -> xr.Dataset:
+
+    probabilitiy_map = probabilitiy_map.copy()
+
+    region_names = ["Solar Wind", "Magnetosheath", "Magnetosphere"]
+    for region in region_names:
+
+        totals = probabilitiy_map["N Observations"].values
+        successes = probabilitiy_map[region].values * totals
+
+        lower, upper = adjusted_wald_interval(successes, totals)
+
+        probabilitiy_map[f"{region} 95% Lower"] = (("X MSM'", "CYL MSM'"), lower)
+        probabilitiy_map[f"{region} 95% Upper"] = (("X MSM'", "CYL MSM'"), upper)
+
+    return probabilitiy_map
+
+
+def adjusted_wald_interval(
+    n_success: NDArray[np.float64], n_samples: NDArray[np.float64]
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    """
+    Get the 95% confidence interval for a Bernoulli trial process with n_sucess
+    and n_samples.
+    """
+
+    z = 1.96
+
+    p_hat = (n_success + z) / (n_samples + z**2)
+
+    std_error = np.sqrt(p_hat * (1 - p_hat) / n_samples)
+
+    upper = p_hat + 1.96 * std_error
+    lower = p_hat - 1.96 * std_error
+
+    # This is a little counter intuitive. These functions
+    # return the max / min between two arrays.
+    lower = np.maximum(lower, 0)
+    upper = np.minimum(upper, 1)
+
+    return lower, upper
 
 
 if __name__ == "__main__":

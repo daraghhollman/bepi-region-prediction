@@ -122,6 +122,11 @@ def main():
             )
             positions_table = rotate_to_aberrated_coordinates(positions_table)
 
+            # region_values contains three items, the probabilitiy of that region along the trajectory, along with a lower and upper bound for 95% CI.
+            probabilities, lower, upper = get_probability_at_position(
+                positions_table, PROBABILITY_MAP
+            )
+
             axis_data.append(
                 {
                     "Minutes Since Closest Approach": (Time(query_times) - ca).to(
@@ -129,9 +134,9 @@ def main():
                     ),
                     "Positions": positions_table,
                     "Distance": dipole_distance,
-                    "Probabilities": get_probability_at_position(
-                        positions_table, PROBABILITY_MAP
-                    ),
+                    "Probabilities": probabilities,
+                    "95% Lower": lower,
+                    "95% Upper": upper,
                 }
             )
 
@@ -171,27 +176,26 @@ def main():
             np.isnan(probabiltiies_array) & ~all_nan_mask, 0, probabiltiies_array
         )
 
-        ax.plot(
-            data["Minutes Since Closest Approach"],
-            data["Probabilities"][0],
-            color=wong_colours[3],
-            label="Solar Wind",
-            **LINE_PARAMS,
-        )
-        ax.plot(
-            data["Minutes Since Closest Approach"],
-            data["Probabilities"][1],
-            color=wong_colours[0],
-            label="Magnetosheath",
-            **LINE_PARAMS,
-        )
-        ax.plot(
-            data["Minutes Since Closest Approach"],
-            data["Probabilities"][2],
-            color=wong_colours[1],
-            label="Magnetosphere",
-            **LINE_PARAMS,
-        )
+        # Probability time series
+        for j, (region_name, colour) in enumerate(
+            zip(["Solar Wind", "Magnetosheath", "Magnetosphere"], [3, 0, 1])
+        ):
+            ax.plot(
+                data["Minutes Since Closest Approach"].value,
+                data["Probabilities"][j],
+                color=wong_colours[colour],
+                label=region_name,
+                **LINE_PARAMS,
+            )
+
+            # Confidence intervals
+            ax.fill_between(
+                data["Minutes Since Closest Approach"].value,
+                data["95% Lower"][j],
+                data["95% Upper"][j],
+                color=wong_colours[colour],
+                alpha=0.5,
+            )
 
         # Add panel label
         ax.text(0.01, 0.85, f"({timeseries_labels[i]})", transform=ax.transAxes)
