@@ -67,6 +67,10 @@ def main():
 
         map_data = probability_maps[regions[i]]
 
+        # We also don't want to show 0 counts for areas where the spacecraft never
+        # observed that region as this obsured areas with near-zero counts.
+        map_data.values[np.where(map_data.values == 0)] = np.nan
+
         mesh = ax.pcolormesh(
             map_data.coords["X MSM'"],
             map_data.coords["CYL MSM'"],

@@ -73,12 +73,6 @@ def main():
     for region in region_names:
         region_probability_maps[region] /= map_totals
 
-        # We also don't want to show 0 counts for areas where the spacecraft never
-        # observed that region as this obsured areas with near-zero counts.
-        region_probability_maps[region][
-            np.where(region_probability_maps[region] == 0)
-        ] = np.nan
-
     # Save map with metadata as an xarray dataset
     region_probability_dataset = xr.Dataset()
 
