@@ -11,6 +11,7 @@ import xarray as xr
 from astropy.table import QTable
 from hermpy.utils import Constants
 from numpy.typing import NDArray
+from scipy.stats import binomtest
 
 from determine_messenger_regions import RESOLUTION
 
@@ -116,12 +117,46 @@ def determine_proportional_confidence_interval(
         totals = probabilitiy_map["N Observations"].values
         successes = probabilitiy_map[region].values * totals
 
-        lower, upper = adjusted_wald_interval(successes, totals)
+        lower, upper = wilson_interval(successes, totals)
 
         probabilitiy_map[f"{region} 95% Lower"] = (("X MSM'", "CYL MSM'"), lower)
         probabilitiy_map[f"{region} 95% Upper"] = (("X MSM'", "CYL MSM'"), upper)
 
     return probabilitiy_map
+
+
+def wilson_interval(
+    n_success: NDArray[np.float64], n_samples: NDArray[np.float64]
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+
+    # Ensure int
+    n_success = n_success.astype(int)
+    n_samples = n_samples.astype(int)
+
+    lower = np.zeros_like(n_success, dtype=float)
+    upper = np.zeros_like(n_success, dtype=float)
+
+    for i in np.ndindex(n_success.shape):
+        cell_successes = n_success[i]
+        cell_totals = n_samples[i]
+
+        if cell_totals == 0:
+            lower[i] = np.nan
+            upper[i] = np.nan
+
+            continue
+
+        ci = binomtest(cell_successes, cell_totals).proportion_ci(method="wilson")
+        lower[i] = ci.low
+        upper[i] = ci.high
+
+    # This is a little counter intuitive. These functions
+    # return the max / min between two arrays.
+    lower = np.maximum(lower, 0)
+    upper = np.minimum(upper, 1)
+
+    return lower, upper
+
 
 
 def adjusted_wald_interval(
