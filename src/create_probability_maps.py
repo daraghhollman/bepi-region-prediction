@@ -146,14 +146,11 @@ def wilson_interval(
 
             continue
 
-        ci = binomtest(cell_successes, cell_totals).proportion_ci(method="wilson")
+        # Wilsoncc uses a Wilson continuity corrected interval, which performs
+        # accurate when sample sizes are low, and when values are extreme.
+        ci = binomtest(cell_successes, cell_totals).proportion_ci(method="wilsoncc")
         lower[i] = ci.low
         upper[i] = ci.high
-
-    # This is a little counter intuitive. These functions
-    # return the max / min between two arrays.
-    lower = np.maximum(lower, 0)
-    upper = np.minimum(upper, 1)
 
     return lower, upper
 

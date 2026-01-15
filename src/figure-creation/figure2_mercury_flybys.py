@@ -46,7 +46,8 @@ LINE_PARAMS = {
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
-from get_probabilities import get_probability_at_position, load_probability_maps
+from get_probabilities import (get_probability_at_position,
+                               load_probability_maps)
 
 # These were yoinked from ESA press:
 # https://www.cosmos.esa.int/web/bepicolombo/home
@@ -67,7 +68,7 @@ PROBABILITY_MAP = load_probability_maps(
     Path(__file__).parent.parent.parent / "resources/region_probability_maps.nc"
 )
 
-FIG_OUTPUT = Path(__file__).parent.parent.parent / "figures/figure3_flybys.pdf"
+FIG_OUTPUT = Path(__file__).parent.parent.parent / "figures/figure2_flybys.pdf"
 
 
 def main():
