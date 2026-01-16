@@ -25,7 +25,6 @@ FIG_OUTPUT = (
 
 
 def main():
-
     # Insure output dir exists, if not, create it
     if not os.path.isdir(FIG_OUTPUT.parent):
         os.makedirs(FIG_OUTPUT.parent)
@@ -64,7 +63,6 @@ def main():
     # Regions plots config
     regions = ["Solar Wind", "Magnetosheath", "Magnetosphere"]
     for i, ax in enumerate(axes[1:]):
-
         map_data = probability_maps[regions[i]]
 
         # We also don't want to show 0 counts for areas where the spacecraft never
@@ -160,7 +158,6 @@ def main():
 
 
 def draw_alternating_circle(center, radius, ax, segments=200, linewidth=3, **kwargs):
-
     x0, y0 = center
 
     # circle points

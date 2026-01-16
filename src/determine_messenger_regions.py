@@ -68,7 +68,6 @@ def main():
 
 
 def determine_messenger_regions(table: QTable) -> QTable:
-
     previous_crossing_table = {
         "BS_OUT": "Solar Wind",
         "BS_IN": "Magnetosheath",
@@ -160,7 +159,6 @@ def merge_crossings_to_positions_table(
 
 
 def get_messenger_crossings() -> InstantEventList:
-
     # Load crossing list from file
     messenger_crossing_list_location = (
         Path(__file__).parent.parent / "resources/hollman_2025_crossing_list.csv"
@@ -198,7 +196,6 @@ def get_messenger_crossings() -> InstantEventList:
 
 
 def get_messenger_positions(cache_file: Path | None = None) -> QTable:
-
     if cache_file == None:
         cache_file = (
             Path(__file__).parent.parent / "resources/messenger_position_cache.ecsv"

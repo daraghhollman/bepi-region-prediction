@@ -46,8 +46,7 @@ LINE_PARAMS = {
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
-from get_probabilities import (get_probability_at_position,
-                               load_probability_maps)
+from get_probabilities import get_probability_at_position, load_probability_maps
 
 # These were yoinked from ESA press:
 # https://www.cosmos.esa.int/web/bepicolombo/home
@@ -72,7 +71,6 @@ FIG_OUTPUT = Path(__file__).parent.parent.parent / "figures/figure2_flybys.pdf"
 
 
 def main():
-
     # Insure directory exists
     if not os.path.isdir(FIG_OUTPUT.parent):
         os.makedirs(FIG_OUTPUT.parent)
@@ -95,7 +93,6 @@ def main():
     axis_data: list[dict[str, Any]] = []
 
     with spice_client.KernelPool():
-
         # Both MPO and MMO were in functionally the same position for these flybys,
         # so it doesn't matter for which we query.
         for ca in CLOSEST_APPROACH_TIMES:
@@ -154,7 +151,6 @@ def main():
     trajectory_axes = []
 
     for i in range(len(axis_data)):
-
         previous_ax = timeseries_axes[i - 1] if i != 0 else None
 
         ax = fig.add_subplot(timeseries_grid[i], sharex=previous_ax, sharey=previous_ax)
@@ -166,7 +162,6 @@ def main():
 
     timeseries_labels = "abcdef"
     for i, ax in enumerate(timeseries_axes):
-
         data = axis_data[i]
 
         # Fixup the nan values for the sake of plotting. Keep all nans where
@@ -195,14 +190,15 @@ def main():
                 data["95% Lower"][j],
                 data["95% Upper"][j],
                 color=wong_colours[colour],
-                alpha=0.5,
+                alpha=0.3,
+                label=r"$\quad$95% CI",
             )
 
         # Add panel label
         ax.text(0.01, 0.85, f"({timeseries_labels[i]})", transform=ax.transAxes)
 
         # Add an identifier for each trajectory to the flyby timeseries panel
-        position = (0.95, 0.8)
+        position = (0.95 + 0.05, 0.8)
         square = Rectangle(
             position,
             0.04,
@@ -210,21 +206,23 @@ def main():
             transform=ax.transAxes,
             facecolor=wong_colours[i],
             edgecolor="black",
+            clip_on=False,
         )
         ax.add_patch(square)
 
         ax.text(
-            position[0] - 0.01,
-            position[1] + 0.08,
+            position[0] + 0.005,
+            position[1] - 0.05,
             f"Flyby {i + 1}",
-            ha="right",
-            va="center",
+            ha="left",
+            va="top",
+            rotation=-90,
             transform=ax.transAxes,
         )
 
         if ax == timeseries_axes[0]:
             ax.legend(
-                loc="upper center", bbox_to_anchor=(0.5, 1.5), ncol=3, fancybox=True
+                loc="upper center", bbox_to_anchor=(0.5, 1.8), ncol=3, framealpha=1
             )
 
         if ax == timeseries_axes[-1]:

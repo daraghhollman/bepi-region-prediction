@@ -25,7 +25,6 @@ RESOURCES_DIR = Path(__file__).parent / "../../resources/"
 
 
 def main():
-
     # Set up logger
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
@@ -98,7 +97,6 @@ def download_bepi_spice(url: str, download_to: Path) -> None:
 def download_with_progress_bar(
     url: str, download_to: Path, block_size: int = 1024
 ) -> None:
-
     response = requests.get(url, stream=True)
 
     # Total size of the file in bytes
@@ -107,9 +105,7 @@ def download_with_progress_bar(
     with tqdm(
         total=total_size, unit="B", unit_scale=True, desc=str(download_to)
     ) as progress_bar:
-
         with open(download_to, "wb") as file:
-
             for data in response.iter_content(block_size):
                 progress_bar.update(len(data))
                 file.write(data)
@@ -119,7 +115,6 @@ def download_with_progress_bar(
 
 
 class CustomFormatter(logging.Formatter):
-
     grey = "\x1b[38;20m"
     yellow = "\x1b[33;20m"
     red = "\x1b[31;20m"

@@ -14,7 +14,6 @@ def load_probability_maps(file: Path) -> xr.Dataset:
 def get_probability_at_position(
     positions: QTable, probability_map: xr.Dataset
 ) -> tuple[list[list[float]], list[list[float]], list[list[float]]]:
-
     # For each position, we need to:
     # - convert to cylindrical coordinates
     # - compare position with map
@@ -49,7 +48,6 @@ def get_probability_at_position(
 
     for ix, ic in zip(x_indices, cyl_indices):
         if 0 <= ix < len(x_bins) - 1 and 0 <= ic < len(cyl_bins) - 1:
-
             # Solar wind
             solar_wind_lower.append(
                 probability_map["Solar Wind 95% Lower"][ix, ic].item()
@@ -77,7 +75,6 @@ def get_probability_at_position(
                 probability_map["Magnetosphere 95% Upper"][ix, ic].item()
             )
         else:
-
             # Out-of-range positions
             solar_wind_lower.append(np.nan)
             solar_wind_prob.append(np.nan)
