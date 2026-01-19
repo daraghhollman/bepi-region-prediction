@@ -37,8 +37,8 @@ sys.path.insert(0, project_root)
 
 from get_probabilities import get_probability_at_position, load_probability_maps
 
-START_TIME = dt.datetime(2027, 4, 1, 6)
-END_TIME = dt.datetime(2027, 4, 1, 16)
+START_TIME = dt.datetime(2027, 5, 2, 4)
+END_TIME = dt.datetime(2027, 5, 2, 14)
 
 TIME_RESOLUTION = 1000  # Number of spice measurements in that time.
 
@@ -181,8 +181,11 @@ def main():
         ax.margins(x=0)
         ax.set_ylabel(f"{id}\nRegion Probability")
 
-    spacecraft_data["MMO"]["Axis"].xaxis.set_major_formatter(
-        DateFormatter("%Y-%m-%d\n%H:%M")
+        ax.set_xlim(START_TIME, END_TIME)
+
+    spacecraft_data["MMO"]["Axis"].xaxis.set_major_formatter(DateFormatter("%H:%M"))
+    spacecraft_data["MMO"]["Axis"].text(
+        -0.09, -0.3, "2027-05-02", transform=spacecraft_data["MMO"]["Axis"].transAxes
     )
     spacecraft_data["MMO"]["Axis"].xaxis.set_major_locator(MinuteLocator(interval=120))
     spacecraft_data["MPO"]["Axis"].xaxis.set_major_locator(MinuteLocator(interval=120))
@@ -192,8 +195,8 @@ def main():
     trajectory_handles = []
     trajectory_labels = []
     trajectory_ax.set_aspect("equal")
-    trajectory_ax.set_xlim(-7, 3)
-    trajectory_ax.set_ylim(0, 10)
+    trajectory_ax.set_xlim(-2, 6)
+    trajectory_ax.set_ylim(0, 8)
     trajectory_ax.set_xlabel(r"$X_{\rm MSM'}\,\left[ R_{\rm M} \right]$")
     trajectory_ax.set_ylabel(
         r"$\left( Y_{\rm MSM'}^2 + Z_{\rm MSM'}^2 \right)^{0.5} \,\left[ R_{\rm M} \right]$"
