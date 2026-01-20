@@ -124,7 +124,7 @@ def main():
     # Plotting
     fig = plt.figure(figsize=(8, 4))
 
-    grid = GridSpec(2, 2, width_ratios=[3, 1], height_ratios=[1, 1], figure=fig)
+    grid = GridSpec(2, 2, width_ratios=[3, 1], figure=fig)
 
     spacecraft_data["MPO"]["Axis"] = fig.add_subplot(grid[0, 0])
     spacecraft_data["MMO"]["Axis"] = fig.add_subplot(grid[1, 0])
