@@ -12,16 +12,13 @@ import numpy as np
 import xarray as xr
 from hermpy.utils import Constants
 from matplotlib.collections import LineCollection
-from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 
 PROBABILITIY_MAPS_FILE = (
     Path(__file__).parent.parent.parent / "resources/region_probability_maps.nc"
 )
 
-FIG_OUTPUT = (
-    Path(__file__).parent.parent.parent / "figures/figure1_probability_maps.pdf"
-)
+FIG_OUTPUT = Path(__file__).parent.parent.parent / "figures/figure1.pdf"
 
 
 def main():

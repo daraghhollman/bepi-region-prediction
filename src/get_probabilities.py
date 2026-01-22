@@ -31,7 +31,6 @@ def get_probability_at_position(
 
     # Compare positions with map.
     x_coords = probability_map.coords["X MSM'"].values
-    cyl_coords = probability_map.coords["CYL MSM'"].values
     bin_size = x_coords[1] - x_coords[0]
 
     x_bins = np.arange(-5, 5 + bin_size, bin_size)

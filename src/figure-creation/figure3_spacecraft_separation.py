@@ -142,7 +142,6 @@ def main():
 
         region_names = ["Solar Wind", "Magnetosheath", "Magnetosphere"]
         for j, region in enumerate(region_names):
-
             ax.plot(
                 spacecraft_data[id]["Times"],
                 spacecraft_data[id]["Probabilities"][j],

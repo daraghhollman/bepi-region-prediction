@@ -302,7 +302,6 @@ def main():
     residence_mask = residence_data.values.T != 0
     trajectory_ax_labels = "fghij"
     for i, ax in enumerate(trajectory_axes):
-
         if ax == trajectory_axes[-1]:
             ax.set_xlabel(r"$X_{\rm MSM'} \quad \left[ R_{\rm M} \right]$")
 

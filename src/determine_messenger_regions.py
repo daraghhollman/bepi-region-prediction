@@ -122,7 +122,7 @@ def merge_crossings_to_positions_table(
     positions_tabke and crossings_table must be sorted in time.
     """
 
-    if cache_file == None:
+    if cache_file is None:
         cache_file = (
             Path(__file__).parent.parent
             / "resources/messenger_positions_crossings_merged_cache.ecsv"
@@ -196,7 +196,7 @@ def get_messenger_crossings() -> InstantEventList:
 
 
 def get_messenger_positions(cache_file: Path | None = None) -> QTable:
-    if cache_file == None:
+    if cache_file is None:
         cache_file = (
             Path(__file__).parent.parent / "resources/messenger_position_cache.ecsv"
         )
