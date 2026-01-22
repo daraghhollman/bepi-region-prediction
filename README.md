@@ -6,13 +6,13 @@ A software repository to determine the likelihood of observing solar wind, magne
 
 **HTTPS**
 ```shell
-git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/daraghhollman/bepi-region-prediction.git
+git clone https://github.com/daraghhollman/bepi-region-prediction.git
 cd bepi-region-prediction
 ```
 
 **SSH**
 ```shell
-git clone --depth 1 --recurse-submodules --shallow-submodules git@github.com:daraghhollman/bepi-region-prediction.git
+git clone git@github.com:daraghhollman/bepi-region-prediction.git
 cd bepi-region-prediction
 ```
 
