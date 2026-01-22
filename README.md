@@ -1,12 +1,10 @@
-# Title
+### Producing quantified predictions of magnetospheric region for spacecraft in the near-Mercury environment based on MESSENGER observations
 
-Short description...
+A software repository to determine the likelihood of observing solar wind, magnetosheath, and magnetosphere regions at any position in the near-Mercury environment.
 
-## Installation
+# Installation
 
-### Clone this repository
-
-Download this repository and the required ESA Bitbucket repository for BepiColombo SPICE kernels.
+## Clone this repository
 
 **HTTPS**
 ```shell
@@ -20,11 +18,12 @@ git clone --depth 1 --recurse-submodules --shallow-submodules git@github.com:dar
 cd bepi-region-prediction
 ```
 
-### Setup
+## Setup
 
 Some initial setup is required before this repository can be used:
 
 * Downloading a MESSENGER bow shock and magnetopause crossing list
+* Downloading BepiColombo SPICE kernels
 
 This is all handled automatically by running the following script:
 
@@ -34,3 +33,23 @@ This is all handled automatically by running the following script:
 ```shell
 uv run python src/setup/init.py
 ```
+
+> [!NOTE]
+> Note that while we use BepiColombo SPICE kernels throughout this work, the outputs are applicable to any spacecraft in Mercury's magnetospheric environment, including MESSENGER.
+
+
+### Creating maps of relative region occurrence
+
+```shell
+# Creates a dataset containing MESSENGER region observations at a 20 minutes time cadence.
+uv run python src/determine_messenger_regions.py
+
+# Bins the above observations spatially and determines a probabilitiy and uncertainty for each bin.
+uv run python src/create_probabilitiy_maps.py
+```
+
+In the short future, we hope to include a Zenodo data repository accompanying this work so that these steps can be skipped, and a user can jump straight into the examples section.
+
+## Examples
+
+The two examples included in the publication can be found under `src/figure-creation/`, however, we instead recommend to first look at the examples directory: `src/examples/`, which includes worked examples in Python notebooks.
