@@ -2,8 +2,6 @@
 
 A software repository to determine the likelihood of observing solar wind, magnetosheath, and magnetosphere regions at any position in the near-Mercury environment.
 
-# Installation
-
 ## Clone this repository
 
 **HTTPS**
@@ -25,7 +23,7 @@ Some initial setup is required before this repository can be used:
 * Downloading a MESSENGER bow shock and magnetopause crossing list
 * Downloading BepiColombo SPICE kernels
 
-This is all handled automatically by running the following script:
+This is all handled automatically by running the following scripts:
 
 > [!TIP]
 > For portability, we **strongly** recommend and use [uv](https://docs.astral.sh/uv/) to manage dependencies and versions. If you do not wish to use uv, dependencies can be found within [pyproject.toml](./pyproject.toml) and a `requirements.txt` file can be made with `pip compile pyproject.toml -o requirements.txt`.
@@ -35,7 +33,7 @@ uv run python src/setup/init.py
 ```
 
 > [!NOTE]
-> Note that while we use BepiColombo SPICE kernels throughout this work, the outputs are applicable to any spacecraft in Mercury's magnetospheric environment, including MESSENGER.
+> Note that while we use BepiColombo SPICE kernels as examples throughout this work, the outputs are applicable to any spacecraft in Mercury's magnetospheric environment, including MESSENGER.
 
 
 ### Creating maps of relative region occurrence
