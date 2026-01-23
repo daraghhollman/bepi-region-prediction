@@ -48,8 +48,14 @@ uv run python src/determine_messenger_regions.py
 uv run python src/create_probabilitiy_maps.py
 ```
 
-In the short future, we hope to include a Zenodo data repository accompanying this work so that these steps can be skipped, and a user can jump straight into the examples section.
-
 ## Examples
+
+Before runnning the included examples, please ensure you have downloaded the probability map file from the [Releases](https://github.com/daraghhollman/bepi-region-prediction/releases) section, or run the above scripts to create the maps locally.
+
+```shell
+mkdir resources
+
+wget https://github.com/daraghhollman/bepi-region-prediction/releases/download/v1.0.0/region_probability_maps.nc -P resources/
+```
 
 The two examples included in the publication can be found under `src/figure-creation/`, however, we instead recommend to first look at the examples directory: `src/examples/`, which includes worked examples in Python notebooks.
