@@ -1,5 +1,7 @@
 ### Producing quantified predictions of magnetospheric region for spacecraft in the near-Mercury environment based on MESSENGER observations
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18348157.svg)](https://doi.org/10.5281/zenodo.18348157)
+
 A software repository to determine the likelihood of observing solar wind, magnetosheath, and magnetosphere regions at any position in the near-Mercury environment.
 
 ## Clone this repository
