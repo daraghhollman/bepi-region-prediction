@@ -102,6 +102,25 @@ def main():
                 mesh, cax=cbar_ax, location="bottom", label="Relative Region Occurence"
             )
 
+            # Add a grey segment on the end
+            grey_width = 0.08
+            grey_ax = ax.inset_axes(
+                [
+                    cbar_bounds[0] - grey_width,
+                    cbar_bounds[1],
+                    grey_width,
+                    cbar_bounds[3],
+                ]
+            )
+
+            grey_ax.add_patch(Rectangle((0, 0), 1, 1, color="0.7"))
+
+            grey_ax.set_xlim(0, 1)
+            grey_ax.set_ylim(0, 1)
+            grey_ax.set_yticks([])
+            grey_ax.set_xticks([0.5])
+            grey_ax.set_xticklabels(["0"])
+
     # Config to apply to all axes
     for i, ax in enumerate(axes):
         ax.set_aspect("equal")
