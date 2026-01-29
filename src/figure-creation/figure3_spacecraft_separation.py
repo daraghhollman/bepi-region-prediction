@@ -197,9 +197,7 @@ def main():
     trajectory_ax.set_xlim(-2, 6)
     trajectory_ax.set_ylim(0, 8)
     trajectory_ax.set_xlabel(r"$X_{\rm MSM'}\,\left[ R_{\rm M} \right]$")
-    trajectory_ax.set_ylabel(
-        r"$\left( Y_{\rm MSM'}^2 + Z_{\rm MSM'}^2 \right)^{0.5} \,\left[ R_{\rm M} \right]$"
-    )
+    trajectory_ax.set_ylabel(r"$\rho \quad \left[ R_{\rm M} \right]$")
 
     circle = Circle(
         (0, Constants.DIPOLE_OFFSET / Constants.MERCURY_RADIUS),

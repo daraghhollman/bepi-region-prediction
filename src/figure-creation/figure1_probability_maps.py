@@ -53,9 +53,7 @@ def main():
     plt.colorbar(
         residence_mesh, cax=cbar_ax, location="bottom", label="Time Spent [hours]"
     )
-    axes[0].set_ylabel(
-        r"$\left(Y_{\rm MSM'}^2 + Z_{\rm MSM'}^2 \right)^{0.5}\quad \left[ R_{\rm M} \right]$"
-    )
+    axes[0].set_ylabel(r"$\rho \quad \left[ R_{\rm M} \right]$")
 
     # Regions plots config
     regions = ["Solar Wind", "Magnetosheath", "Magnetosphere"]
