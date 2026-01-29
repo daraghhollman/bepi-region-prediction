@@ -129,12 +129,14 @@ def main():
     spacecraft_data["MPO"]["Axis"] = fig.add_subplot(grid[0, 0])
     spacecraft_data["MMO"]["Axis"] = fig.add_subplot(grid[1, 0])
 
-    trajectory_ax = fig.add_subplot(grid[:, 1])
+    xz_ax = fig.add_subplot(grid[0, 1])
+    cyl_ax = fig.add_subplot(grid[1, 1])
 
     axes = [
         spacecraft_data["MPO"]["Axis"],
         spacecraft_data["MMO"]["Axis"],
-        trajectory_ax,
+        xz_ax,
+        cyl_ax,
     ]
 
     for i, id in enumerate(spacecraft):
@@ -171,14 +173,25 @@ def main():
         )
         cyl = np.sqrt(y**2 + z**2)
 
-        trajectory_ax.plot(x, cyl, color=wong_colours[3 + i * 2], label=id, zorder=5)
+        xz_ax.plot(x, z, color=wong_colours[3 + i * 2], label=id, zorder=5)
+        cyl_ax.plot(
+            x,
+            cyl,
+            color=wong_colours[3 + i * 2],
+            label=id if id == "MPO" else f"{id}/Mio",
+            zorder=5,
+        )
 
     # Time series ax formatting
     for id in spacecraft:
         ax = spacecraft_data[id]["Axis"]
 
         ax.margins(x=0)
-        ax.set_ylabel(f"{id}\nRegion Probability")
+        ax.set_ylabel(
+            f"{id}\nRegion Probability"
+            if id == "MPO"
+            else f"{id}/Mio\nRegion Probability"
+        )
 
         ax.set_xlim(START_TIME, END_TIME)
 
@@ -193,11 +206,18 @@ def main():
     # Trajectory ax formatting
     trajectory_handles = []
     trajectory_labels = []
-    trajectory_ax.set_aspect("equal")
-    trajectory_ax.set_xlim(-2, 6)
-    trajectory_ax.set_ylim(0, 8)
-    trajectory_ax.set_xlabel(r"$X_{\rm MSM'}\,\left[ R_{\rm M} \right]$")
-    trajectory_ax.set_ylabel(r"$\rho \quad \left[ R_{\rm M} \right]$")
+
+    xz_ax.set_xlim(-2, 6)
+    xz_ax.set_ylim(-4, 4)
+    xz_ax.set_ylabel(r"$Z_{\rm MSM'} \quad \left[ R_{\rm M} \right]$")
+
+    cyl_ax.set_xlim(-2, 6)
+    cyl_ax.set_ylim(0, 8)
+    cyl_ax.set_xlabel(r"$X_{\rm MSM'}\,\left[ R_{\rm M} \right]$")
+    cyl_ax.set_ylabel(r"$\rho \quad \left[ R_{\rm M} \right]$")
+
+    for ax in [xz_ax, cyl_ax]:
+        ax.set_aspect("equal")
 
     circle = Circle(
         (0, Constants.DIPOLE_OFFSET / Constants.MERCURY_RADIUS),
@@ -207,7 +227,7 @@ def main():
         linewidth=2,
         zorder=5,
     )
-    trajectory_ax.add_patch(circle)
+    cyl_ax.add_patch(circle)
     circle = Circle(
         (0, -1 * Constants.DIPOLE_OFFSET / Constants.MERCURY_RADIUS),
         1,
@@ -216,15 +236,26 @@ def main():
         linewidth=2,
         zorder=5,
     )
-    trajectory_ax.add_patch(circle)
+    cyl_ax.add_patch(circle)
 
-    plot_magnetospheric_boundaries(trajectory_ax)
+    circle = Circle(
+        (0, -1 * Constants.DIPOLE_OFFSET / Constants.MERCURY_RADIUS),
+        1,
+        edgecolor="black",
+        facecolor="none",
+        linewidth=2,
+        zorder=5,
+    )
+    xz_ax.add_patch(circle)
+
+    plot_magnetospheric_boundaries(xz_ax)
+    plot_magnetospheric_boundaries(cyl_ax)
 
     residence_data = PROBABILITY_MAP["Minutes In Bin"] / 60  # Convert to hours
     residence_mask = residence_data.values.T != 0
 
     # Add MESSENGER outline
-    trajectory_ax.contourf(
+    cyl_ax.contourf(
         residence_data.coords["X MSM'"],
         residence_data.coords["CYL MSM'"],
         residence_mask,
@@ -233,7 +264,7 @@ def main():
         zorder=-2,
     )
 
-    ax_handles, ax_labels = trajectory_ax.get_legend_handles_labels()
+    ax_handles, ax_labels = cyl_ax.get_legend_handles_labels()
     trajectory_handles.extend(ax_handles)
     trajectory_labels.extend(ax_labels)
 
@@ -253,15 +284,15 @@ def main():
         trajectory_handles,
         trajectory_labels,
         loc="lower center",
-        bbox_to_anchor=(0.85, 0.75),
+        bbox_to_anchor=(0.85, 0.8),
     )
 
     # Add panel labels
-    panel_labels = "abc"
+    panel_labels = "abcd"
     for i, ax in enumerate(axes):
         label_text = ax.text(
             0.01,
-            0.9,
+            0.85,
             f"({panel_labels[i]})",
             transform=ax.transAxes,
         )
@@ -275,6 +306,7 @@ def main():
             ]
         )
 
+    plt.subplots_adjust(top=0.8)
     plt.savefig(FIG_OUTPUT, format="pdf")
 
 
