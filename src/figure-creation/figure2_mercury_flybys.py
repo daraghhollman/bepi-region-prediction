@@ -358,7 +358,7 @@ def main():
     for ax in trajectory_axes[:-1]:
         ax.tick_params(labelbottom=False)
 
-    plt.subplots_adjust(right=0.99)
+    plt.subplots_adjust(right=0.99, top=0.87)
     plt.savefig(FIG_OUTPUT, format="pdf")
 
 
