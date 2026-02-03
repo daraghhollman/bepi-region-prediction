@@ -22,7 +22,7 @@ FIG_OUTPUT = Path(__file__).parent.parent.parent / "figures/figure1.pdf"
 
 
 def main():
-    # Insure output dir exists, if not, create it
+    # Ensure output dir exists, if not, create it
     if not os.path.isdir(FIG_OUTPUT.parent):
         os.makedirs(FIG_OUTPUT.parent)
 
