@@ -95,9 +95,18 @@ def determine_messenger_regions(table: QTable) -> QTable:
     ]
 
     # Remove rows where the crossings before and after disagree on the region.
+    table_before = table.copy()
     table = table[
         table["Region (from next crossing)"] == table["Region (from previous crossing)"]
     ]
+    table_after = table.copy()
+
+    # Determine ammount of disagreement
+    num_disagree = len(table_before) - len(table_after)
+    ratio_removed = num_disagree / len(table_before)
+    print(
+        f"Fraction of observations removed due to crossing disagrement: {ratio_removed}"
+    )
 
     # Then we are safe to assign.
     table["Region"] = table["Region (from next crossing)"]
