@@ -70,14 +70,20 @@ def main():
     mp_model = np.column_stack((mp_model_x, mp_model_y))
 
     # GET MINIMUM DISTANCE
+    # This is directional: this ordering means that we determine a distance for
+    # each contour point.
     bs_distances = distance.cdist(bs_contour, bs_model)
     mp_distances = distance.cdist(mp_contour, mp_model)
 
-    avg_bs_min_distance = bs_distances.min(axis=1).mean()
-    avg_mp_min_distance = mp_distances.min(axis=1).mean()
+    bs_min_distance = bs_distances.min(axis=1)
+    mp_min_distance = mp_distances.min(axis=1)
 
-    print(f"Average bow shock min distance: {avg_bs_min_distance:.3f}")
-    print(f"Average magnetopause min distance: {avg_mp_min_distance:.3f}")
+    print(
+        f"Average bow shock min distance: {bs_min_distance.mean():.3f} +/- {bs_min_distance.std():.3f}"
+    )
+    print(
+        f"Average magnetopause min distance: {mp_min_distance.mean():.3f} +/- {mp_min_distance.std():.3f}"
+    )
 
     # PLOTTING
     _, ax = plt.subplots()
