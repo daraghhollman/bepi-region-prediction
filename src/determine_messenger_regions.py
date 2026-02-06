@@ -18,7 +18,7 @@ from sunpy.time import TimeRange
 
 OUTPUT_FILE = Path(__file__).parent.parent / "resources/messenger_regions.ecsv"
 
-RESOLUTION: u.Quantity = 20 * u.minute
+RESOLUTION: u.Quantity = 5 * u.minute
 
 
 def main():
