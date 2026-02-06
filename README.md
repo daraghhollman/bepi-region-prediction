@@ -55,7 +55,7 @@ Before runnning the included examples, please ensure you have downloaded the pro
 ```shell
 mkdir resources
 
-wget https://github.com/daraghhollman/bepi-region-prediction/releases/download/v1.0.0/region_probability_maps.nc -P resources/
+wget https://github.com/daraghhollman/bepi-region-prediction/releases/download/v1.1.0/region_probability_maps.nc -P resources/
 ```
 
 The two examples included in the publication can be found under `src/figure-creation/`, however, we instead recommend to first look at the examples directory: `src/examples/`, which includes worked examples in Python notebooks.
