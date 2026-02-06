@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+uv run python src/figure-creation/figure1_probability_maps.py &&
+uv run python src/figure-creation/figure2_mercury_flybys.py &&
+uv run python src/figure-creation/figure3_spacecraft_separation.py
