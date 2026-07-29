@@ -45,7 +45,7 @@ uv run python src/setup/init.py
 uv run python src/determine_messenger_regions.py
 
 # Bins the above observations spatially and determines a probabilitiy and uncertainty for each bin.
-uv run python src/create_probabilitiy_maps.py
+uv run python src/create_probability_maps.py
 ```
 
 ## Examples
