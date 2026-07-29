@@ -8,6 +8,7 @@ dependencies = [
     "astropy>=7.2.0",
     "h5py>=3.15.1",
     "hermpy",
+    "ipykernel>=7.3.0",
     "matplotlib>=3.10.8",
     "numpy>=2.4.0",
     "planetary-coverage>=1.2.1",

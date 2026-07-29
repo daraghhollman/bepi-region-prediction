@@ -178,7 +178,7 @@ def main():
             x,
             cyl,
             color=wong_colours[3 + i * 2],
-            label=id if id == "MPO" else f"{id}/Mio",
+            label=id if id == "MPO" else f"Mio",
             zorder=5,
         )
 
@@ -190,7 +190,7 @@ def main():
         ax.set_ylabel(
             f"{id}\nRegion Probability"
             if id == "MPO"
-            else f"{id}/Mio\nRegion Probability"
+            else f"Mio\nRegion Probability"
         )
 
         ax.set_xlim(START_TIME, END_TIME)
