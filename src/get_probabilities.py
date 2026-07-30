@@ -1,3 +1,5 @@
+from typing import List
+from typing import Tuple
 from pathlib import Path
 
 import astropy.units as u
@@ -13,13 +15,7 @@ def load_probability_maps(file: Path) -> xr.Dataset:
 
 def get_probability_at_position(
     positions: QTable, probability_map: xr.Dataset
-) -> tuple[list[list[float]], list[list[float]], list[list[float]]]:
-    # For each position, we need to:
-    # - convert to cylindrical coordinates
-    # - compare position with map
-    # - record a probability value for solar wind, magnetosheath, and
-    # magneosphere.
-
+) -> Tuple[List[List[float]], List[List[float]], List[List[float]]]:
     positions = positions.copy()
 
     # Convert to X-CYL
@@ -32,63 +28,42 @@ def get_probability_at_position(
     # Compare positions with map.
     x_coords = probability_map.coords["X MSM'"].values
     bin_size = x_coords[1] - x_coords[0]
-
     x_bins = np.arange(-5, 5 + bin_size, bin_size)
     cyl_bins = np.arange(0, 8 + bin_size, bin_size)
 
-    # Digitize the trajectory data into bin indices
     x_indices = np.digitize(positions["X MSM'"], x_bins) - 1
     cyl_indices = np.digitize(positions["CYL MSM'"], cyl_bins) - 1
 
-    # Iterrate through position indices and assign probabilities
-    solar_wind_prob, magnetosheath_prob, magnetosphere_prob = [], [], []
-    solar_wind_lower, magnetosheath_lower, magnetosphere_lower = [], [], []
-    solar_wind_upper, magnetosheath_upper, magnetosphere_upper = [], [], []
+    in_range = (
+        (x_indices >= 0) & (x_indices < len(x_bins) - 1) &
+        (cyl_indices >= 0) & (cyl_indices < len(cyl_bins) - 1)
+    )
 
-    for ix, ic in zip(x_indices, cyl_indices):
-        if 0 <= ix < len(x_bins) - 1 and 0 <= ic < len(cyl_bins) - 1:
-            # Solar wind
-            solar_wind_lower.append(
-                probability_map["Solar Wind 95% Lower"][ix, ic].item()
-            )
-            solar_wind_prob.append(probability_map["Solar Wind"][ix, ic].item())
-            solar_wind_upper.append(
-                probability_map["Solar Wind 95% Upper"][ix, ic].item()
-            )
+    # Clip so out-of-range indices don't raise
+    safe_x_indices = np.clip(x_indices, 0, len(x_bins) - 2)
+    safe_cyl_indices = np.clip(cyl_indices, 0, len(cyl_bins) - 2)
 
-            # Magnetosheath
-            magnetosheath_lower.append(
-                probability_map["Magnetosheath 95% Lower"][ix, ic].item()
-            )
-            magnetosheath_prob.append(probability_map["Magnetosheath"][ix, ic].item())
-            magnetosheath_upper.append(
-                probability_map["Magnetosheath 95% Upper"][ix, ic].item()
-            )
+    regions = [
+        "Solar Wind", "Magnetosheath", "Magnetosphere",
+    ]
 
-            # Magnetosphere
-            magnetosphere_lower.append(
-                probability_map["Magnetosphere 95% Lower"][ix, ic].item()
-            )
-            magnetosphere_prob.append(probability_map["Magnetosphere"][ix, ic].item())
-            magnetosphere_upper.append(
-                probability_map["Magnetosphere 95% Upper"][ix, ic].item()
-            )
-        else:
-            # Out-of-range positions
-            solar_wind_lower.append(np.nan)
-            solar_wind_prob.append(np.nan)
-            solar_wind_upper.append(np.nan)
+    probabilities, lower, upper = [], [], []
+    for name in regions:
+        prob_vals = probability_map[name].values
+        lower_vals = probability_map[f"{name} 95% Lower"].values
+        upper_vals = probability_map[f"{name} 95% Upper"].values
 
-            magnetosheath_lower.append(np.nan)
-            magnetosheath_prob.append(np.nan)
-            magnetosheath_upper.append(np.nan)
+        p = prob_vals[safe_x_indices, safe_cyl_indices]
+        l = lower_vals[safe_x_indices, safe_cyl_indices]
+        u_ = upper_vals[safe_x_indices, safe_cyl_indices]
 
-            magnetosphere_lower.append(np.nan)
-            magnetosphere_prob.append(np.nan)
-            magnetosphere_upper.append(np.nan)
+        # Mask out-of-range points as NaN
+        p = np.where(in_range, p, np.nan)
+        l = np.where(in_range, l, np.nan)
+        u_ = np.where(in_range, u_, np.nan)
 
-    probabilities = [solar_wind_prob, magnetosheath_prob, magnetosphere_prob]
-    lower = [solar_wind_lower, magnetosheath_lower, magnetosphere_lower]
-    upper = [solar_wind_upper, magnetosheath_upper, magnetosphere_upper]
+        probabilities.append(p.tolist())
+        lower.append(l.tolist())
+        upper.append(u_.tolist())
 
     return probabilities, lower, upper
