@@ -11,6 +11,7 @@ to:
 
 """
 
+import shutil
 import datetime as dt
 import logging
 import os
@@ -81,10 +82,17 @@ def extract_bepi_spice(zip_location: Path) -> None:
     logger = logging.getLogger(__name__)
     logger.info("Extracting BepiColombo SPICE kernels")
 
+    dest_dir = RESOURCES_DIR / "bepicolombo-spice"
+
+    # Clear out any previous extraction so the rename below can never
+    # collide with a non-empty existing directory.
+    if dest_dir.exists():
+        shutil.rmtree(dest_dir)
+
     with zipfile.ZipFile(zip_location, "r") as zip_file:
         zip_file.extractall(RESOURCES_DIR)
 
-    os.rename(RESOURCES_DIR / "BEPICOLOMBO/", RESOURCES_DIR / "bepicolombo-spice/")
+    os.rename(RESOURCES_DIR / "BEPICOLOMBO/", dest_dir)
 
 
 def download_bepi_spice(url: str, download_to: Path) -> None:
